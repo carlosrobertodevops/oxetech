@@ -1,4 +1,5 @@
 # In[1]:
+# %% Imports
 import numpy as np
 import pandas as pd
 import seaborn as sns
@@ -13,6 +14,7 @@ print(f"Dataset carregado com {df.shape[0]} linhas e {df.shape[1]} colunas.")
 df.head()
 
 # In[2]:
+# %% Código
 
 # --- SEU CÓDIGO AQUI ---
 # 1. Separe as features (X) do target (y)
@@ -25,6 +27,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 # --- FIM DO CÓDIGO ---
 
 # In[3]:
+# %% Código
 # --- CHECKPOINT 1 ---
 try:
     assert X_train is not None, "Você esqueceu de fazer o train_test_split!"
@@ -34,6 +37,7 @@ except Exception as e:
     print(f"❌ ERRO NO CHECKPOINT 1: {e}")
 
 # In[4]:
+# %% Código
 
 print("CONTAGEM DE NULOS (ANTES DO TRATAMENTO):")
 print(X_train.isnull().sum())
@@ -46,6 +50,7 @@ imputer = SimpleImputer(strategy='median')
 
 # --- FIM DO CÓDIGO ---
 # In[5]:
+# %% Código
 assert imputer is not None, "Instancie o SimpleImputer antes de continuar!"
 
 # --- SEU CÓDIGO AQUI ---
@@ -58,6 +63,7 @@ X_test[['horsepower']] = imputer.transform(X_test[['horsepower']])
 
 # --- FIM DO CÓDIGO ---
 # In[6]:
+# %% Código
 # --- CHECKPOINT 2 ---
 try:
     assert X_train['horsepower'].isnull().sum() == 0, "Ainda existem valores nulos no X_train!"
@@ -71,6 +77,7 @@ print("VALORES NA COLUNA 'ORIGIN' (TEXTO):")
 print(X_train['origin'].value_counts())
 
 # In[7]:
+# %% Código
 
 # --- SEU CÓDIGO AQUI ---
 
@@ -82,6 +89,7 @@ except TypeError:
 
 # --- FIM DO CÓDIGO ---
 # In[8]:
+# %% Código
 assert ohe is not None, "Instancie o OneHotEncoder antes de continuar!"
 
 # --- SEU CÓDIGO AQUI ---
@@ -110,6 +118,7 @@ except Exception as e:
     print(f"❌ ERRO NO CHECKPOINT 3: {e}")
 
 # In[9]:
+# %% Código
 
 cols_para_escalar = ['cylinders', 'displacement', 'horsepower', 'weight', 'acceleration', 'model_year']
 
