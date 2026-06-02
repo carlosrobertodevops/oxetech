@@ -1,0 +1,43 @@
+service: ${env:SERVICE_NAME, 'serverless-elb'}
+
+provider:
+  name: aws
+  runtime: ${env:LAMBDA_RUNTIME, 'nodejs20.x'}
+  region: ${env:AWS_DEFAULT_REGION, 'us-east-1'}
+  stage: ${opt:stage, env:STAGE, 'local'}
+  deploymentBucket:
+    name: ${env:SERVERLESS_DEPLOYMENT_BUCKET, 'serverless-elb-local-deployment-bucket'}
+
+package:
+  patterns:
+    - '!**'
+    - handler.js
+
+functions:
+  hello1:
+    handler: handler.hello1
+    events:
+      - alb:
+          listenerArn: ${env:HTTP_LISTENER_ARN}
+          priority: 1
+          conditions:
+            path: /hello1
+
+  hello2:
+    handler: handler.hello2
+    events:
+      - alb:
+          listenerArn: ${env:HTTP_LISTENER_ARN}
+          priority: 2
+          conditions:
+            path: /hello2
+
+plugins:
+  - serverless-localstack
+
+custom:
+  localstack:
+    stages:
+      - local
+    host: ${env:SERVERLESS_LOCALSTACK_HOST, 'http://localhost'}
+    edgePort: ${env:EDGE_PORT, 4566}

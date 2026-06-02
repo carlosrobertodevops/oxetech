@@ -1,0 +1,23 @@
+{
+  "num_cols": [
+    "MES_FATO",
+    "DIA_FATO",
+    "HORA_FATO",
+    "LONGITUDE",
+    "LATITUDE"
+  ],
+  "cat_cols": [
+    "DIA_SEMANA_FATO",
+    "TURNO",
+    "CIDADE_FATO",
+    "RISP",
+    "AISP",
+    "AMBIENTE"
+  ],
+  "classes": [
+    "ARMA",
+    "CVLI",
+    "DROGA"
+  ],
+  "metrica": "macro-F1"
+}
