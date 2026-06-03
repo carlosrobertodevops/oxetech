@@ -1,0 +1,13 @@
+/* style.css */
+/* O Tailwind CSS já está importado via CDN. 
+   Adicione estilos customizados específicos aqui. */
+
+body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Exemplo: transição suave para itens da lista */
+#task-list li {
+    transition: all 0.3s ease;
+}
