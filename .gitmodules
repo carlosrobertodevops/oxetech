@@ -1,6 +1,11 @@
-[submodule "ccii-noite/oxetech/ccii-noite/0x3-cl0ud-l4bs"]
-	path = ccii-noite/oxetech/ccii-noite/0x3-cl0ud-l4bs
-	url = https://github.com/carlosrobertodevops/oxetech.git
-[submodule "oxetech/ccii-noite/0x3-cl0ud-l4bs"]
-	path = oxetech/ccii-noite/0x3-cl0ud-l4bs
-	url = https://github.com/carlosrobertodevops/oxetech.git
+[submodule "ccii-noite"]
+    path = ccii-noite
+    url = git@github.com:carlosrobertodevops/ccii-noite.git
+
+[submodule "dwfs-tarde"]
+    path = dwfs-tarde
+    url = git@github.com:carlosrobertodevops/dwfs-tarde.git
+
+[submodule "iaam-tarde"]
+    path = iaam-tarde
+    url = git@github.com:carlosrobertodevops/iaam-tarde.git
