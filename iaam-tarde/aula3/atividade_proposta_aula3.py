@@ -1,0 +1,215 @@
+# ---
+# jupyter:
+#   jupytext:
+#     text_representation:
+#       extension: .py
+#       format_name: percent
+#       format_version: '1.3'
+#       jupytext_version: 1.19.3
+#   kernelspec:
+#     display_name: Python 3
+#     name: python3
+# ---
+
+# %% [markdown] id="R-9Qc4q7Cdcy"
+# # 💻 Laboratório Prático: Engenharia de Dados para Machine Learning
+# **ÔxeTech Academy**
+#
+# ---
+#
+# ## 📌 Sobre esta Atividade
+# Bem-vindo ao seu primeiro laboratório prático guiado! O objetivo aqui é treinar os conceitos fundamentais de preparação de dados. **Esta atividade é um treinamento livre (não avaliativo)**, mas é o aquecimento essencial para que você tire de letra as próximas avaliações!
+#
+# ### 🎯 O que vamos praticar:
+# * **Data Splitting:** Divisão correta entre dados de Treino e Teste para evitar *Data Leakage*.
+# * **Imputação:** Tratamento de valores ausentes (Missing Values) de forma inteligente.
+# * **Encoding:** Conversão de dados textuais para o idioma da máquina (One-Hot Encoding).
+# * **Escalonamento:** Padronização matemática das grandezas (StandardScaler).
+#
+# ### 🗄️ Dataset: Auto MPG
+# Trabalharemos com dados reais. O dataset *Auto MPG* contém informações técnicas de veículos (cilindros, peso, cavalos de potência, região de origem) e seu respectivo consumo de combustível (milhas por galão - `mpg`).
+#
+# ### ⚙️ Como Funciona a Dinâmica:
+# 1. **Diagnóstico (🔍):** Algumas células servem apenas para mostrar o "problema" nos dados originais. Rode-as para entender o contexto.
+# 2. **Sua Vez (👨‍💻):** Onde você encontrar o comentário `# --- SEU CÓDIGO AQUI ---`, substitua os valores `None` pela sua implementação.
+# 3. **Checkpoints (🛑):** Após o seu código, sempre haverá um validador automático. Rode a célula para receber um feedback imediato (✅ Sucesso ou ❌ Erro) e saber se pode avançar para o próximo passo.
+#
+# *Respire fundo, confie no processo e bom código!* 🚀
+#
+# ---
+#
+#
+
+# %% [markdown] id="e6a83edc-35d2-4ada-9311-0e3f26368fdd"
+#  ## PASSO 1: Preparação e Leitura dos Dados
+#  Vamos importar as bibliotecas e carregar o dataset Auto MPG.
+#  Apenas rode a célula abaixo para iniciar e ver a cara dos nossos dados!
+
+# %% id="20d21691-3f51-4cff-94a5-aee0216aa9a1" colab={"base_uri": "https://localhost:8080/", "height": 241} executionInfo={"status": "ok", "timestamp": 1778786749510, "user_tz": 180, "elapsed": 4892, "user": {"displayName": "Derek Alves", "userId": "14289560599080275824"}} outputId="24fe42ad-e4db-497b-9912-beb097826842"
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.impute import SimpleImputer
+from sklearn.preprocessing import OneHotEncoder, StandardScaler
+import seaborn as sns
+
+print("Carregando o dataset Auto MPG da UCI...")
+df = sns.load_dataset('mpg').drop(columns=['name'])
+
+print(f"Dataset carregado com {df.shape[0]} linhas e {df.shape[1]} colunas.")
+df.head()
+
+# %% [markdown] id="7fcccb3d-0ee3-45ba-809d-ef498b88a088"
+#  ## PASSO 2: Divisão Treino e Teste
+#  Sempre dividimos os dados ANTES de qualquer tratamento para evitar o vazamento de dados (*Data Leakage*).
+#  ⚠️ **INSTRUÇÃO:** Substitua os valores `None` abaixo para separar X e y, e fazer o split.
+
+# %% id="2f159aa0-7a71-45d6-8d7f-1ff9b1e9a8e0" colab={"base_uri": "https://localhost:8080/"} executionInfo={"status": "ok", "timestamp": 1778787095466, "user_tz": 180, "elapsed": 8, "user": {"displayName": "Derek Alves", "userId": "14289560599080275824"}} outputId="1cc9cfed-6999-40c2-eac7-7a7796547826"
+# --- SEU CÓDIGO AQUI ---
+# 1. Separe as features (X) do target (y)
+X = df.drop(columns=['mpg'])
+y = df['mpg']
+
+# 2. Use a função train_test_split (use test_size=0.2 e random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# --- FIM DO CÓDIGO ---
+
+# --- CHECKPOINT 1 ---
+try:
+    assert X_train is not None, "Você esqueceu de fazer o train_test_split!"
+    assert X_train.shape[0] == 318, "O tamanho do conjunto de treino está incorreto. Verifique o test_size."
+    print("✅ CHECKPOINT 1 PASSOU! Divisão feita com sucesso.")
+except Exception as e:
+    print(f"❌ ERRO NO CHECKPOINT 1: {e}")
+
+# %% [markdown] id="e6fc0e68-73ea-4e65-a785-dd38a8e170f6"
+#  ## PASSO 3: Tratamento de Valores Ausentes (Imputação)
+#
+#  ### 🔍 DIAGNÓSTICO: O Problema
+#  Rode a célula abaixo para ver o estado atual dos dados de treino.
+#  Observe a contagem de valores nulos na coluna `horsepower` (cavalos de potência).
+
+# %% id="6c9566cc-9250-4aac-ae57-37c619cb9928"
+print("CONTAGEM DE NULOS (ANTES DO TRATAMENTO):")
+print(X_train.isnull().sum())
+
+# %% [markdown] id="0db4cad6-5c6b-47d1-a512-da7c7beb36c5"
+#  ⚠️ **INSTRUÇÃO:** Agora que você viu o problema, use o `SimpleImputer` com a estratégia de **mediana** para preencher esses buracos. Substitua os `None`.
+
+# %% id="e39f83b0-3bc7-4a4d-935a-7ada5a554cc7"
+# --- SEU CÓDIGO AQUI ---
+
+# 1. Instancie o SimpleImputer
+imputer = SimpleImputer(strategy='median')
+
+# --- FIM DO CÓDIGO ---
+
+assert imputer is not None, "Instancie o SimpleImputer antes de continuar!"
+
+# --- SEU CÓDIGO AQUI ---
+
+# 2. Treine (fit) o imputador e transforme (transform) a coluna no X_train
+X_train[['horsepower']] = imputer.fit_transform(X_train[['horsepower']])
+
+# 3. Apenas aplique (transform) no X_test
+X_test[['horsepower']] = imputer.transform(X_test[['horsepower']])
+
+# --- FIM DO CÓDIGO ---
+
+# --- CHECKPOINT 2 ---
+try:
+    assert X_train['horsepower'].isnull().sum() == 0, "Ainda existem valores nulos no X_train!"
+    assert X_test['horsepower'].isnull().sum() == 0, "Ainda existem valores nulos no X_test!"
+    print("✅ CHECKPOINT 2 PASSOU! Problema resolvido. Veja o resultado abaixo:")
+    print(X_train[['horsepower']].isnull().sum())
+except Exception as e:
+    print(f"❌ ERRO NO CHECKPOINT 2: {e}")
+
+# %% [markdown] id="36dc067b-34b5-466c-a1ad-ef0f333fc595"
+#  ## PASSO 4: Encoding (One-Hot)
+#
+#  ### 🔍 DIAGNÓSTICO: O Problema
+#  Modelos de ML não sabem ler texto. Rode a célula abaixo para ver o que existe dentro da coluna `origin`.
+#  Como os países não possuem hierarquia matemática entre si, usaremos o One-Hot Encoding.
+
+# %% id="39656ad5-2467-4aae-93e8-4cbba7fdb582"
+print("VALORES NA COLUNA 'ORIGIN' (TEXTO):")
+print(X_train['origin'].value_counts())
+
+# %% [markdown] id="8c9a8e76-f749-4b22-8d86-008d55e9733e"
+#  ⚠️ **INSTRUÇÃO:** Aplique o One-Hot Encoding. Lembre-se de usar `sparse_output=False` e `drop='first'` para evitar redundância de dados.
+
+# %% id="6541095b-d338-4481-912e-4a86b9ff8398"
+# --- SEU CÓDIGO AQUI ---
+
+# 1. Instancie o OneHotEncoder
+ohe = OneHotEncoder(sparse_output=False, drop='first')
+
+# --- FIM DO CÓDIGO ---
+
+assert ohe is not None, "Instancie o OneHotEncoder antes de continuar!"
+
+# --- SEU CÓDIGO AQUI ---
+
+# 2. Treine e transforme a coluna 'origin' do X_train
+ohe_cols_train = ohe.fit_transform(X_train[['origin']])
+ohe_df_train = pd.DataFrame(ohe_cols_train, columns=ohe.get_feature_names_out(), index=X_train.index)
+
+# 3. Transforme a coluna 'origin' do X_test
+ohe_cols_test = ohe.transform(X_test[['origin']])
+ohe_df_test = pd.DataFrame(ohe_cols_test, columns=ohe.get_feature_names_out(), index=X_test.index)
+
+# --- FIM DO CÓDIGO ---
+
+# 4. Concatenando os dataframes e removendo a original
+X_train = pd.concat([X_train.drop(columns=['origin']), ohe_df_train], axis=1)
+X_test = pd.concat([X_test.drop(columns=['origin']), ohe_df_test], axis=1)
+
+# --- CHECKPOINT 3 ---
+try:
+    assert 'origin' not in X_train.columns, "A coluna 'origin' original ainda está no dataset!"
+    assert any('origin_' in col for col in X_train.columns), "As novas colunas não foram criadas."
+    print("✅ CHECKPOINT 3 PASSOU! Texto transformado em binários. Veja o resultado:")
+    X_train.head(3)
+except Exception as e:
+    print(f"❌ ERRO NO CHECKPOINT 3: {e}")
+
+# %% [markdown] id="0e5bb41c-0dba-4274-9c08-82e784ba321f"
+#  ## PASSO 5: Escalonamento (Scaling)
+#
+#  ### 🔍 DIAGNÓSTICO: O Problema
+#  Rode a célula abaixo. Compare os valores máximos (`max`) do peso (`weight`) e da aceleração (`acceleration`).
+#  O peso está na casa dos milhares, enquanto a aceleração mal chega a 25. O modelo vai achar que o peso é mais "importante" apenas por ser um número maior.
+
+# %% id="1072543c-e62b-495b-aeaa-e5838e15b68d"
+cols_para_escalar = ['cylinders', 'displacement', 'horsepower', 'weight', 'acceleration', 'model_year']
+
+print("ESTATÍSTICAS ANTES DO ESCALONAMENTO:")
+X_train[cols_para_escalar].describe().round(2).loc[['mean', 'std', 'max']]
+
+# %% [markdown] id="af080646-02fa-4c2a-b05d-2f90d7fe6528"
+#  ⚠️ **INSTRUÇÃO:** Use o `StandardScaler` para colocar todas as variáveis numéricas na mesma escala.
+
+# %% id="9665312e-bbc5-4eed-9c0a-72b784264707"
+# --- SEU CÓDIGO AQUI ---
+
+# 1. Instancie o StandardScaler
+scaler = StandardScaler()
+assert scaler is not None, "Instancie o StandardScaler antes de continuar!"
+
+# 2. Treine (fit) e transforme (transform) as colunas do X_train
+X_train[cols_para_escalar] = scaler.fit_transform(X_train[cols_para_escalar])
+
+# 3. Apenas transforme o X_test
+X_test[cols_para_escalar] = scaler.transform(X_test[cols_para_escalar])
+
+# --- CHECKPOINT 4 ---
+try:
+    assert abs(X_train['weight'].mean()) < 0.01, "A média não está próxima de 0."
+    assert abs(X_train['weight'].std() - 1.0) < 0.01, "O desvio padrão não é 1."
+    print("✅ CHECKPOINT 4 PASSOU! Dados padronizados. Veja como as escalas agora são iguais:")
+    X_train[cols_para_escalar].describe().round(2).loc[['mean', 'std', 'max']]
+    print("\n🎉 PARABÉNS! Você concluiu a preparação de dados com sucesso!")
+except Exception as e:
+    print(f"❌ ERRO NO CHECKPOINT 4: {e}")
